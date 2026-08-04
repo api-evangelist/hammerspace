@@ -1,0 +1,100 @@
+generated: '2026-08-04'
+method: searched
+source: >-
+  Hammerspace's own Apache-2.0 open source clients (csi-plugin pkg/client and
+  deploy/kubernetes/SECRETS.md) plus the live OIDC discovery document on the
+  Hammerspace support portal. Hammerspace publishes no OpenAPI, so no
+  securityScheme block could be derived mechanically.
+summary:
+  types: [http, session-cookie, openIdConnect]
+  api_key_in: []
+  oauth2_flows: [authorizationCode, implicit]
+  note: >-
+    Two distinct auth surfaces exist. The Anvil management REST API uses a form
+    login that establishes a session cookie — there is no API key, bearer token
+    or OAuth flow on that surface. The Salesforce Experience Cloud support portal
+    is a separate OIDC/OAuth2 identity surface for customer support, not for the
+    data platform API.
+schemes:
+- name: anvil-form-login
+  surface: apis.yml#hammerspace:anvil-management-api
+  type: http
+  scheme: form-login
+  description: >-
+    POST an application/x-www-form-urlencoded body with `username` and `password`
+    to {anvil}/mgmt/v1.2/rest/login. A 200 establishes a session cookie that the
+    client must carry (Hammerspace's reference Go client uses a net/http
+    cookiejar). Subsequent requests send Content-Type: application/json.
+  endpoint: https://{anvil-host}/mgmt/v1.2/rest/login
+  parameters:
+  - name: username
+    in: formData
+  - name: password
+    in: formData
+  session:
+    mechanism: cookie
+    reauthentication: >-
+      Clients re-issue the login and retry once when a request returns 401 or
+      403; the reference driver does exactly this in doRequest.
+  sources:
+  - https://github.com/hammer-space/csi-plugin/blob/main/pkg/client/hsclient.go
+- name: supportportal-oidc
+  surface: https://supportportal.hammerspace.com
+  type: openIdConnect
+  openIdConnectUrl: https://supportportal.hammerspace.com/.well-known/openid-configuration
+  description: >-
+    Salesforce Experience Cloud identity for the Hammerspace customer support
+    portal. Standard OIDC discovery is public; the endpoints below come verbatim
+    from that document. This authenticates support-portal users, not the data
+    platform API.
+  issuer: https://supportportal.hammerspace.com
+  authorization_endpoint: https://supportportal.hammerspace.com/services/oauth2/authorize
+  token_endpoint: https://supportportal.hammerspace.com/services/oauth2/token
+  userinfo_endpoint: https://supportportal.hammerspace.com/services/oauth2/userinfo
+  jwks_uri: https://supportportal.hammerspace.com/id/keys
+  revocation_endpoint: https://supportportal.hammerspace.com/services/oauth2/revoke
+  introspection_endpoint: https://supportportal.hammerspace.com/services/oauth2/introspect
+  registration_endpoint: https://supportportal.hammerspace.com/services/oauth2/register
+  end_session_endpoint: https://supportportal.hammerspace.com/services/auth/idp/oidc/logout
+  id_token_signing_alg_values_supported: [RS256]
+  scopes: scopes/hammerspace-scopes.yml
+  sources:
+  - well-known/hammerspace-openid-configuration.json
+authorization:
+  model: role-based ACLs per object type
+  description: >-
+    Hammerspace roles are per-object-type create/read/update/delete ACLs. A
+    service account can be bound to a custom role granting only the object types
+    an integration touches — Hammerspace's own CSI guidance recommends full
+    control of shares and snapshots plus read-only (R on ANY) everywhere else,
+    rather than a full Anvil administrator.
+  docs: https://github.com/hammer-space/csi-plugin/blob/main/deploy/kubernetes/SECRETS.md
+credential_handling:
+  guidance_published: true
+  url: https://github.com/hammer-space/csi-plugin/blob/main/deploy/kubernetes/SECRETS.md
+  practices:
+  - Dedicated least-privilege Anvil service user rather than the admin account.
+  - Kubernetes Secret com.hammerspace.csi.credentials with username/password/endpoint
+    keys, injected via secretKeyRef.
+  - Documented Sealed Secrets, External Secrets Operator and Secrets Store CSI paths.
+  - RBAC scoped to get on the single named Secret via resourceNames.
+transport:
+  tls: required
+  note: >-
+    The reference client exposes a tlsVerify switch because Anvil deployments
+    frequently run with an internally issued certificate; verification is
+    enabled by default in the published manifests.
+federation:
+  identity_providers: >-
+    The Anvil management API exposes /idp and /ad resources for configuring
+    external identity providers and Active Directory domain join, so directory
+    integration is a first-class configuration surface.
+  sources:
+  - https://github.com/hammer-space/ansible/blob/main/Operations/idp-add.yml
+  - https://github.com/hammer-space/ansible/blob/main/Operations/ad-join.yml
+x-evidence:
+  fetched: '2026-08-04'
+  probes:
+  - url: https://supportportal.hammerspace.com/.well-known/openid-configuration
+    http_status: 200
+    content_type: application/json;charset=UTF-8

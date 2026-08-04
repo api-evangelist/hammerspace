@@ -1,0 +1,225 @@
+generated: '2026-08-04'
+method: derived
+source: >-
+  Derived from the collection paths exercised by Hammerspace's own Apache-2.0
+  clients — github.com/hammer-space/ansible Operations playbooks and the
+  csi-plugin Go client — plus the object vocabulary of the hstk CLI. No OpenAPI
+  exists to derive $ref links from, so relationships are asserted only where a
+  public client demonstrably navigates from one entity to another.
+applies_to: apis.yml#hammerspace:anvil-management-api
+base_path: /mgmt/v1.2/rest
+confidence: medium
+entities:
+- name: share
+  collection: /shares
+  item: /shares/{id}
+  operations_observed: [GET collection, GET item, POST, PUT, DELETE]
+  description: >-
+    An exported folder in the global namespace, the primary provisioning unit.
+    Carries objectives at create time and is the unit the CSI driver maps to a
+    Kubernetes PersistentVolume.
+  evidence: [csi-plugin, ansible]
+- name: file
+  collection: /files
+  lookup: /files?path={path}
+  operations_observed: [GET]
+  description: An individual inode in the namespace, addressed by path rather than
+    by opaque id.
+  evidence: [csi-plugin]
+- name: objective
+  collection: /objectives
+  item: /objectives/{id}
+  operations_observed: [GET collection, GET item]
+  description: >-
+    A declarative placement, tiering, protection or retention rule expressed as
+    an (objective, expression) pair. Objectives are the control abstraction of
+    the whole platform; they attach to shares and to individual files.
+  evidence: [csi-plugin, ansible, hstk]
+- name: task
+  collection: /tasks
+  item: /tasks/{id}
+  operations_observed: [GET collection, GET item]
+  description: >-
+    An asynchronous unit of work returned alongside HTTP 202 by long-running
+    mutations; polled to a terminal state (COMPLETED, FAILED, HALTED, CANCELLED,
+    VALIDATION_FAILED, RESUMED).
+  evidence: [csi-plugin]
+- name: share-snapshot
+  collection: /share-snapshots
+  item: /share-snapshots/{id}
+  actions: [snapshot-create, snapshot-list, snapshot-delete]
+  filter: /share-snapshots?spec=schedule.name=eq={name}
+  operations_observed: [GET collection, GET item, POST, DELETE]
+  evidence: [csi-plugin, ansible]
+- name: file-snapshot
+  collection: /file-snapshots
+  item: /file-snapshots/{id}
+  actions: [list]
+  evidence: [csi-plugin]
+- name: snapshot-retention
+  collection: /snapshot-retentions
+  item: /snapshot-retentions/{id}
+  evidence: [ansible]
+- name: share-replication
+  collection: /share-replications
+  evidence: [ansible]
+- name: schedule
+  collection: /schedules
+  item: /schedules/{id}
+  evidence: [ansible]
+- name: storage-volume
+  collection: /storage-volumes
+  item: /storage-volumes/{id}
+  query_params: [force]
+  evidence: [ansible, hstk]
+- name: base-storage-volume
+  collection: /base-storage-volumes
+  operations_observed: [GET collection]
+  evidence: [csi-plugin]
+- name: object-storage-volume
+  collection: /object-storage-volumes
+  item: /object-storage-volumes/{id}
+  description: S3-compatible object targets backing the namespace.
+  evidence: [ansible]
+- name: volume-group
+  collection: /volume-groups
+  item: /volume-groups/{id}
+  evidence: [ansible, hstk]
+- name: data-portal
+  collection: /data-portals
+  description: >-
+    The DSX data-mover endpoints clients mount. The CSI driver resolves and sorts
+    portals, falling back to a floating IP when no portals are configured.
+  evidence: [csi-plugin]
+- name: node
+  collection: /nodes
+  item: /nodes/{id}
+  evidence: [ansible]
+- name: site
+  collection: /sites
+  item: /sites/{id}
+  local: /sites/local
+  description: A location in the global namespace; keep-on-site rules pin copies
+    to named sites.
+  evidence: [ansible, hstk]
+- name: cluster-control
+  collection: /cntl
+  sub_resources: [/cntl/state, /cntl/set-proxy, /cntl/clear-proxy]
+  description: Cluster state and cluster-wide settings, including the portal floating
+    IPs.
+  evidence: [csi-plugin, ansible]
+- name: license
+  collection: /licenses
+  item: /licenses/{id}
+  evidence: [ansible]
+- name: ad
+  collection: /ad
+  item: /ad/{id}
+  description: Active Directory domain join configuration.
+  evidence: [ansible]
+- name: idp
+  collection: /idp
+  item: /idp/{id}
+  description: External identity provider configuration.
+  evidence: [ansible]
+- name: antivirus
+  collection: /antivirus
+  item: /antivirus/{id}
+  evidence: [ansible]
+- name: backup
+  collection: /backup
+  item: /backup/{id}
+  evidence: [ansible]
+- name: ntp
+  collection: /ntps
+  item: /ntps/{id}
+  evidence: [ansible]
+- name: syslog
+  collection: /syslog
+  item: /syslog/{id}
+  evidence: [ansible]
+relationships:
+- from: share
+  to: objective
+  kind: has_many
+  via: objectives included in the share create request body
+  confidence: high
+  evidence: >-
+    csi-plugin 1.2.9 changed to include share objectives in share create requests
+    instead of applying them with follow-up objective-set calls.
+- from: file
+  to: objective
+  kind: has_many
+  via: per-file objective set
+  confidence: high
+  evidence: >-
+    The csi-plugin objectiveTarget parameter selects share, file, or both; hstk
+    exposes `hs objective add|delete|list` on inodes.
+- from: share
+  to: share-snapshot
+  kind: has_many
+  via: share name in the snapshot action path
+  confidence: high
+  evidence: /share-snapshots/snapshot-create/{share} and snapshot-delete/{share}/{snapshot}
+- from: share-snapshot
+  to: schedule
+  kind: belongs_to
+  via: schedule.name
+  confidence: high
+  evidence: /share-snapshots?spec=schedule.name=eq={name}
+- from: share-snapshot
+  to: snapshot-retention
+  kind: has_one
+  via: retention policy
+  confidence: medium
+- from: share
+  to: task
+  kind: has_many
+  via: async task returned with HTTP 202 on create
+  confidence: high
+- from: share
+  to: storage-volume
+  kind: has_many
+  via: volumes backing the share
+  confidence: medium
+  evidence: hstk `hs status volume` reports health of volumes backing the share(s)
+- from: volume-group
+  to: storage-volume
+  kind: has_many
+  via: group membership
+  confidence: medium
+- from: share
+  to: site
+  kind: has_many
+  via: keep-on-site rules
+  confidence: high
+  evidence: hstk `hs keep-on-site add|list|has|delete` per share
+- from: file
+  to: storage-volume
+  kind: has_many
+  via: data placement across volumes
+  confidence: medium
+  evidence: hstk `hs dump files_on_volume` and `map_file_to_obj`
+- from: data-portal
+  to: cluster-control
+  kind: belongs_to
+  via: portalFloatingIps on /cntl/state
+  confidence: high
+metadata_model:
+  description: >-
+    Beyond the REST resources, Hammerspace's differentiating data model is the
+    per-inode metadata plane exposed through hstk and Hammerscript: attributes
+    (arbitrary name/value), keywords, labels, tags, Rekognition tags (added by
+    image and video analysis), and objectives. Objectives are expressed as
+    (objective, expression) pairs and are what drive automated placement.
+  surface: cli/hammerspace-cli.yml
+x-evidence:
+  fetched: '2026-08-04'
+  sources:
+  - https://github.com/hammer-space/ansible
+  - https://github.com/hammer-space/csi-plugin
+  - https://github.com/hammer-space/hstk
+  caveat: >-
+    This is an inventory of the resources Hammerspace's own public clients call,
+    not a schema. Field-level structure, required properties and response shapes
+    are not published and are deliberately absent rather than guessed.

@@ -1,10 +1,22 @@
 aid: hammerspace
 name: Hammerspace
-description: 'Hammerspace is a company surfaced via the API Evangelist harvest backlog (source: secondary-market)
-  and added to the network as a stub for full-pipeline profiling.'
+description: 'Hammerspace, Inc. is a Redwood City, California software company behind
+  the Hammerspace Global Data Platform (formerly the Global Data Environment), a parallel
+  file system and software-defined data platform that unifies unstructured data across
+  on-premises storage, edge sites, and AWS, Azure and Google Cloud into a single global
+  namespace. Data is reached through standard protocols — NFS, pNFS v4.2 with Flex
+  Files, SMB, S3, and CSI for Kubernetes — while placement, replication, tiering, snapshots
+  and retention are driven by declarative objectives rather than by manual data movement.
+  The platform is administered through a GUI, an admin CLI, the open source hstk Python
+  toolkit, Ansible and Terraform automation, and the Anvil metadata server REST API
+  at /mgmt/v1.2/rest. The 2026 AI Data Platform release adds Tier-0 NVMe pooling on
+  GPU servers, Milvus vector search, and a Model Context Protocol (MCP) server that
+  exposes enterprise data to AI agents and RAG pipelines.'
+image: https://avatars.githubusercontent.com/u/47825731?v=4
 url: https://raw.githubusercontent.com/api-evangelist/hammerspace/refs/heads/main/apis.yml
 x-type: company
 x-source: harvest:secondary-market
+x-source-url: https://forgeglobal.com/hammerspace_stock/
 x-tier: stub
 x-tier-reason: harvest
 specificationVersion: '0.20'
@@ -12,12 +24,104 @@ created: '2026-08-04'
 modified: '2026-08-04'
 tags:
 - Company
-apis: []
+- Storage
+- Data Management
+- File Systems
+- Data Orchestration
+- Hybrid Cloud
+- Kubernetes
+- Artificial Intelligence
+- Unstructured Data
+- Infrastructure
+apis:
+- aid: hammerspace:anvil-management-api
+  name: Hammerspace Anvil Management API
+  description: 'The management REST API served by the Hammerspace Anvil metadata server
+    at the base path /mgmt/v1.2/rest. It is the programmatic control plane behind the
+    Hammerspace GUI and admin CLI, covering shares, files, objectives, storage volumes,
+    object-storage volumes, volume groups, data portals, nodes, sites, snapshots, snapshot
+    retentions, share replications, schedules, tasks, licenses, Active Directory and
+    identity provider configuration, antivirus, backup, NTP, syslog and proxy settings.
+    It is served by each customer deployment rather than from a Hammerspace-hosted
+    public endpoint, so the host is the customer''s own Anvil. Hammerspace does not
+    publish an OpenAPI description of it on a public URL; the operations recorded here
+    were observed in Hammerspace''s own Apache-2.0 licensed open source clients (the
+    Kubernetes CSI driver and the Ansible operations playbooks).'
+  humanURL: https://hammerspace.com/resources/
+  baseURL: https://{anvil-host}/mgmt/v1.2/rest
+  tags:
+  - Storage
+  - Data Management
+  - Infrastructure
+  properties:
+  - type: Documentation
+    url: https://hammerspace.com/resources/
+  - type: SourceCode
+    url: https://github.com/hammer-space/csi-plugin/blob/main/pkg/client/hsclient.go
+  - type: SourceCode
+    url: https://github.com/hammer-space/ansible
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: DomainSecurity
+  url: security/hammerspace-domain-security.yml
 - type: Website
-  url: https://forgeglobal.com/hammerspace_stock/
+  url: https://hammerspace.com/
+- type: About
+  url: https://hammerspace.com/about-us/
+- type: Documentation
+  url: https://hammerspace.com/resources/
+- type: Resources
+  url: https://hammerspace.com/resources/
+- type: Support
+  url: https://hammerspace.com/support/
+- type: Login
+  url: https://supportportal.hammerspace.com/
+- type: Blog
+  url: https://hammerspace.com/blog/
+- type: Newsroom
+  url: https://hammerspace.com/news-room/
+- type: GitHubOrganization
+  url: https://github.com/hammer-space
+- type: Marketplace
+  url: https://aws.amazon.com/marketplace/seller-profile?id=bf2492c2-776f-4390-a1cc-bf489509ce7b
+- type: Partners
+  url: https://hammerspace.com/hs-partners_category/technology-partners/
+- type: TermsOfService
+  url: https://hammerspace.com/eula/
+- type: PrivacyPolicy
+  url: https://hammerspace.com/privacy-statement-us/
+- type: Authentication
+  url: authentication/hammerspace-authentication.yml
+- type: Conventions
+  url: conventions/hammerspace-conventions.yml
+- type: DataModel
+  url: data-model/hammerspace-data-model.yml
+- type: Lifecycle
+  url: lifecycle/hammerspace-lifecycle.yml
+- type: ChangeLog
+  url: changelog/hammerspace-changelog.yml
+- type: Conformance
+  url: conformance/hammerspace-conformance.yml
+- type: Compliance
+  url: https://hammerspace.com/hammerspace-announces-fips-140-3-validation-plans-to-integrate-certified-cryptography-into-data-platform/
+- type: Packages
+  url: packages/hammerspace-packages.yml
+- type: SDKs
+  url: packages/hammerspace-packages.yml
+- type: CLI
+  url: cli/hammerspace-cli.yml
+- type: MCPServer
+  url: mcp/hammerspace-mcp.yml
+- type: WellKnown
+  url: well-known/hammerspace-well-known.yml
+- type: LLMsTxt
+  url: llms/hammerspace-llms.txt
+x-enrichment:
+  date: '2026-08-04'
+  status: enriched
+  artifacts_added: 15
+  pass: local-v1

@@ -1,0 +1,116 @@
+generated: '2026-08-04'
+method: searched
+source: >-
+  PyPI, Docker Hub, pkg.go.dev and the github.com/hammer-space organization,
+  cross-checked against the Hammerspace Inc GitHub org profile
+packages:
+- language: python
+  registry: pypi
+  name: hstk
+  version: 4.6.6.1
+  url: https://pypi.org/project/hstk/
+  install: pip3 install hstk
+  source: https://github.com/hammer-space/hstk
+  license: Apache-2.0
+  official: true
+  description: >-
+    Hammerspace CLI tool and python toolkit. Ships the `hs` command and the hstk
+    library for driving Hammerscript against a Hammerspace global file system.
+    Supports Hammerspace release 4.5.x and later; 4.6.6.x requires 4.6.5+.
+  releases: 13
+- language: go
+  registry: go-modules
+  name: github.com/hammer-space/csi-plugin
+  version: v1.3.0
+  url: https://pkg.go.dev/github.com/hammer-space/csi-plugin
+  install: go get github.com/hammer-space/csi-plugin
+  source: https://github.com/hammer-space/csi-plugin
+  license: Apache-2.0
+  official: true
+  description: >-
+    Container Storage Interface (CSI) driver for Hammerspace. Contains
+    pkg/client, the reference Go HTTP client for the Anvil management REST API
+    (base path /mgmt/v1.2/rest).
+- language: container
+  registry: docker-hub
+  name: hammerspaceinc/csi-plugin
+  url: https://hub.docker.com/r/hammerspaceinc/csi-plugin
+  install: docker pull hammerspaceinc/csi-plugin
+  official: true
+  description: Published CSI driver image; ~2.9M pulls.
+- language: container
+  registry: docker-hub
+  name: hammerspaceinc/mds-registrar
+  url: https://hub.docker.com/r/hammerspaceinc/mds-registrar
+  install: docker pull hammerspaceinc/mds-registrar
+  official: true
+  description: >-
+    Automatically registers Hammerspace application containers such as di and cm
+    with the metadata server.
+- language: container
+  registry: docker-hub
+  name: hammerspaceinc/director-mgmt
+  url: https://hub.docker.com/r/hammerspaceinc/director-mgmt
+  install: docker pull hammerspaceinc/director-mgmt
+  official: true
+automation:
+- kind: ansible
+  name: hammer-space/ansible
+  url: https://github.com/hammer-space/ansible
+  official: true
+  description: >-
+    Ansible playbooks that drive the Anvil management REST API for AD join,
+    IdP, antivirus, backup, licences, nodes, NTP, syslog, proxy, shares,
+    snapshots, retentions, replications, schedules, sites, storage volumes,
+    object-storage volumes and volume groups.
+- kind: terraform
+  name: hammer-space/terraform
+  url: https://github.com/hammer-space/terraform
+  official: true
+  description: Terraform automation examples for deploying Hammerspace.
+- kind: grafana
+  name: hammer-space/hammerspace-grafana-dashboards
+  url: https://github.com/hammer-space/hammerspace-grafana-dashboards
+  official: true
+  description: >-
+    Grafana dashboards for the Prometheus exporters built into Hammerspace.
+integrations:
+- name: hammer-space/sghs
+  url: https://github.com/hammer-space/sghs
+  description: ShotGrid / Hammerspace integration (media and entertainment).
+  official: true
+- name: hammer-space/hsft
+  url: https://github.com/hammer-space/hsft
+  description: ftrack / Hammerspace integration (media and entertainment).
+  official: true
+not_first_party:
+- name: hammerspace-api
+  registry: pypi
+  url: https://pypi.org/project/hammerspace-api/
+  reason: >-
+    Placeholder package parked by an unrelated third party ("Parked for upcoming
+    work on the Pocket/Hammerspace project"); owner is not Hammerspace Inc.
+- name: '@hammerspace-me/aframe-client-sdk'
+  registry: npm
+  reason: >-
+    Published by hammerspace.me, an unrelated metaverse-wearables project, not
+    Hammerspace Inc.
+- name: '@hammerspace-me/technology-providers-sdk'
+  registry: npm
+  reason: Same unrelated hammerspace.me organization.
+registries_checked:
+- npm
+- pypi
+- maven-central
+- nuget
+- pkg.go.dev
+- rubygems
+- packagist
+- crates.io
+- docker-hub
+x-evidence:
+  fetched: '2026-08-04'
+  sources:
+  - https://pypi.org/pypi/hstk/json
+  - https://hub.docker.com/v2/repositories/hammerspaceinc/
+  - https://api.github.com/orgs/hammer-space/repos

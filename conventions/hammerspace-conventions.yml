@@ -1,0 +1,135 @@
+generated: '2026-08-04'
+method: searched
+source: >-
+  Derived from Hammerspace's own Apache-2.0 open source clients — the csi-plugin
+  Go client (pkg/client/hsclient.go, pkg/common/metrics.go, docs/observability.md)
+  and the Ansible operations playbooks — since Hammerspace publishes no OpenAPI.
+applies_to: apis.yml#hammerspace:anvil-management-api
+base_path: /mgmt/v1.2/rest
+authentication:
+  style: form login establishing a session cookie
+  detail: authentication/hammerspace-authentication.yml
+  reauthentication: >-
+    On 401 or 403 the client re-issues POST /login and retries the request once.
+content_types:
+  request: application/json
+  login_request: application/x-www-form-urlencoded
+  response: application/json
+async_operations:
+  supported: true
+  pattern: 202-plus-task
+  description: >-
+    Long-running mutations do not complete inline. POST /shares (share create)
+    returns HTTP 202 together with a task, and the caller polls GET /tasks/{id}
+    until the task reaches a terminal state. This is the dominant cost of share
+    provisioning in Hammerspace's own driver, which instruments it separately.
+  task_resource: /tasks/{id}
+  terminal_states:
+  - COMPLETED
+  - FAILED
+  - HALTED
+  - CANCELLED
+  - VALIDATION_FAILED
+  - RESUMED
+  polling_guidance:
+    reference_client_cadence: >-
+      Fixed 2s interval for the first 30s, then 4s; overall deadline 3600s.
+      Hammerspace explicitly moved off exponential backoff (previously capped at
+      30s) because share-create almost always completes in under ~15s and the
+      backoff added up to 30s of detection lag after completion.
+  source: https://github.com/hammer-space/csi-plugin/blob/main/docs/observability.md
+filtering:
+  supported: true
+  style: RSQL-like `spec` query parameter
+  example: /share-snapshots?spec=schedule.name%3Deq%3D{name}
+  note: >-
+    Observed in the Ansible playbooks; operator form is field=eq=value,
+    URL-encoded. Not formally documented on a public page.
+  source: https://github.com/hammer-space/ansible
+force_flag:
+  supported: true
+  example: DELETE /storage-volumes/{id}?force=true
+lookup_by_path:
+  supported: true
+  example: GET /files?path={path}
+  note: File-level lookups are by path rather than by opaque identifier.
+pagination:
+  documented: false
+  note: >-
+    No pagination parameters, envelope, or link headers appear in any of
+    Hammerspace's public clients; collection endpoints (GET /shares,
+    GET /objectives, GET /tasks, GET /base-storage-volumes) return bare JSON
+    arrays. Recorded as unknown rather than absent — the private product
+    documentation may describe one.
+idempotency:
+  supported: false
+  note: >-
+    No Idempotency-Key header, client-supplied request identifier, or documented
+    retry-safety contract appears anywhere in Hammerspace's public clients or
+    docs. Mutations are ordinary POST/PUT/DELETE calls whose retry safety comes
+    only from the 202-plus-task model. Deliberately NOT wired as an
+    `Idempotency` pointer in apis.yml — there is no idempotency contract to point
+    at.
+request_tracing:
+  supported: true
+  standard: W3C Trace Context
+  header: traceparent
+  description: >-
+    Hammerspace's reference client injects a W3C traceparent header into every
+    REST call to the Anvil, using OpenTelemetry propagation under the
+    `hammerspace-csi` instrumentation scope, so requests can be correlated
+    across the driver and the Anvil.
+  source: https://github.com/hammer-space/csi-plugin/blob/main/CHANGELOG.md
+route_templating:
+  documented: true
+  description: >-
+    Hammerspace publishes the low-cardinality route templates its own client uses
+    for metrics, which doubles as a public statement of the URL shapes: identifier
+    segments after shares, tasks, files, objectives and file-snapshots collapse to
+    {id}; action verbs (file-snapshots/list, share-snapshots/snapshot-create,
+    snapshot-list, snapshot-delete) are preserved.
+  source: https://github.com/hammer-space/csi-plugin/blob/main/pkg/common/metrics.go
+versioning:
+  scheme: uri-path
+  current: v1.2
+  base_path: /mgmt/v1.2/rest
+  detail: lifecycle/hammerspace-lifecycle.yml
+error_envelope:
+  documented: false
+  problem_json: false
+  note: >-
+    No application/problem+json media type and no published error catalogue.
+    Hammerspace's reference client treats any non-expected status code as a
+    failure and surfaces the raw body; 401/403 specifically triggers re-login and
+    a single retry. 404 is used as an ordinary type probe by the driver.
+rate_limiting:
+  documented: false
+  note: >-
+    No rate-limit headers or throttling policy appear in any public client or
+    document. The API is served by the customer's own Anvil, so there is no
+    vendor-imposed quota surface.
+observability:
+  prometheus_exporters: true
+  description: >-
+    Prometheus exporters are built into Hammerspace, and Hammerspace publishes
+    Grafana dashboards for them. The CSI driver adds its own OpenTelemetry
+    metrics and traces (hs_csi_operation_*, hs_csi_anvil_requests_total labelled
+    by http_method / http_route / http_status_code).
+  sources:
+  - https://github.com/hammer-space/hammerspace-grafana-dashboards
+  - https://github.com/hammer-space/csi-plugin/blob/main/docs/observability.md
+cross_links:
+  authentication: authentication/hammerspace-authentication.yml
+  lifecycle: lifecycle/hammerspace-lifecycle.yml
+  data_model: data-model/hammerspace-data-model.yml
+  changelog: changelog/hammerspace-changelog.yml
+x-evidence:
+  fetched: '2026-08-04'
+  sources:
+  - https://github.com/hammer-space/csi-plugin
+  - https://github.com/hammer-space/ansible
+  caveat: >-
+    Every convention above is evidenced in code Hammerspace itself publishes
+    under Apache-2.0. Hammerspace does not publish a REST API reference on a
+    public URL, so anything not observable in that code is recorded as unknown
+    rather than asserted.

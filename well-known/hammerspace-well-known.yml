@@ -1,0 +1,78 @@
+generated: '2026-08-04'
+method: probed
+source: live GET of /.well-known/* on every Hammerspace host in apis.yml
+note: >-
+  hammerspace.com is served behind a SiteGround bot-protection layer that answers
+  every path — including /.well-known/* and /llms.txt — with HTTP 202 and a
+  195-byte captcha challenge page (sg-captcha: challenge header, meta refresh to
+  /.well-known/sgcaptcha/). No /.well-known/ document could be retrieved from the
+  marketing host; the 202s below are the challenge, not a published resource.
+  The one real discovery document on a Hammerspace host is the OIDC configuration
+  served by the Salesforce Experience Cloud support portal.
+hosts:
+- host: https://hammerspace.com
+  reachable: true
+  challenge: sitegrounds-sgcaptcha
+  documents:
+  - path: /.well-known/security.txt
+    status: 202
+    result: captcha-challenge
+  - path: /security.txt
+    status: 202
+    result: captcha-challenge
+  - path: /.well-known/openid-configuration
+    status: 202
+    result: captcha-challenge
+  - path: /.well-known/oauth-authorization-server
+    status: 202
+    result: captcha-challenge
+  - path: /.well-known/oauth-protected-resource
+    status: 202
+    result: captcha-challenge
+  - path: /.well-known/api-catalog
+    status: 202
+    result: captcha-challenge
+  - path: /.well-known/ai-plugin.json
+    status: 202
+    result: captcha-challenge
+  - path: /.well-known/agent-card.json
+    status: 202
+    result: captcha-challenge
+  - path: /.well-known/agent.json
+    status: 202
+    result: captcha-challenge
+  - path: /llms.txt
+    status: 202
+    result: captcha-challenge
+- host: https://supportportal.hammerspace.com
+  reachable: true
+  platform: Salesforce Experience Cloud
+  documents:
+  - path: /.well-known/openid-configuration
+    status: 200
+    content_type: application/json;charset=UTF-8
+    file: hammerspace-openid-configuration.json
+  - path: /.well-known/security.txt
+    status: 401
+  - path: /.well-known/oauth-authorization-server
+    status: 401
+  - path: /.well-known/oauth-protected-resource
+    status: 401
+  - path: /.well-known/api-catalog
+    status: 401
+  - path: /.well-known/ai-plugin.json
+    status: 401
+  - path: /.well-known/agent-card.json
+    status: 401
+  - path: /.well-known/agent.json
+    status: 401
+  - path: /llms.txt
+    status: 401
+findings:
+  security_txt: null
+  api_catalog: null
+  agent_card: null
+  openid_configuration: well-known/hammerspace-openid-configuration.json
+x-evidence:
+  fetched: '2026-08-04'
+  user_agent: browser

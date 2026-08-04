@@ -1,0 +1,111 @@
+generated: '2026-08-04'
+method: searched
+source: >-
+  https://github.com/hammer-space/csi-plugin/blob/main/CHANGELOG.md and the
+  Hammerspace news room release announcements
+note: >-
+  Hammerspace does not publish a dated changelog for the Data Platform itself on
+  a public URL — product release notes ship to customers with the software and
+  through the gated support portal. Two public change surfaces exist and are
+  recorded separately below: a formal Keep a Changelog file for the open source
+  CSI driver, and the versioned product release announcements in the news room.
+surfaces:
+- id: csi-plugin
+  name: Hammerspace CSI Volume Plugin
+  url: https://github.com/hammer-space/csi-plugin/blob/main/CHANGELOG.md
+  format: Keep a Changelog 1.0.0
+  scheme: semver
+  current: 1.3.0
+  dated: false
+  note: Entries are versioned and categorised (Added/Changed/Removed/Fixed/Security)
+    but carry no release dates.
+  entries:
+  - version: 1.3.0
+    breaking: true
+    highlights:
+    - Added the objectiveTarget StorageClass parameter (share | file | both) so
+      file-backed provisioning skips the per-file objective set and the Anvil
+      file-visibility poll.
+    - Added OpenTelemetry tracing and Prometheus metrics across every controller
+      and node RPC and every Anvil REST call (hs_csi_operation_*,
+      hs_csi_anvil_requests_total).
+    - Added minimum size gates for file-backed volumes and an fsfreeze of the
+      source volume before snapshot.
+    - Added Kubernetes 1.34/1.35/1.36 manifests and an importable Grafana
+      dashboard under deploy/monitoring.
+    - Removed ext3 as a supported file-backed filesystem; CreateVolume now
+      rejects fsType=ext3 with InvalidArgument.
+    - Changed task-completion polling to a fixed 2s/30s-then-4s cadence instead
+      of exponential backoff.
+    - Security — hardened example credential handling, added SECRETS.md covering
+      a least-privilege Anvil service account, and scoped the secrets RBAC grant
+      to get on a single named Secret.
+  - version: 1.2.9
+    breaking: true
+    highlights:
+    - Included share objectives in share create requests instead of follow-up
+      objective-set calls.
+    - Treated all known terminal task states consistently when polling.
+    - Removed the driver-specific clientMountOptions StorageClass parameter in
+      favour of Kubernetes mountOptions / CSI mountFlags.
+    - Honoured the fqdn StorageClass parameter in Anvil-only deployments with no
+      data portals.
+  - version: 1.2.8
+    breaking: false
+    highlights:
+    - Added OpenTelemetry tracing with W3C traceparent propagation on all REST
+      calls to Hammerspace.
+    - Added NFS root-share mounting with per-volume bind mounts.
+    - Added the mountBackingShareName StorageClass parameter.
+- id: data-platform
+  name: Hammerspace Data Platform / Global Data Platform
+  url: https://hammerspace.com/news-room/
+  format: press announcements
+  scheme: major.minor
+  current: '5.2'
+  dated: true
+  entries:
+  - version: 'AI Data Platform (NVIDIA reference design)'
+    date: '2026-03'
+    highlights:
+    - Made the AI Data Platform generally available on an NVIDIA reference design.
+    - Integrated a Milvus vector database and Model Context Protocol services to
+      turn unstructured enterprise data into searchable embeddings and connect AI
+      agents and RAG workflows to business data.
+    - Kept vectors and source data continuously synchronised under one governance,
+      compliance and performance policy.
+    source: https://hammerspace.com/hammerspace-launches-ai-data-platform-based-on-nvidia-reference-design/
+  - version: 'FIPS 140-3 validation'
+    date: '2026-03-31'
+    highlights:
+    - Announced FIPS 140-3 validated cryptography, with integration into the Data
+      Platform planned for a release by the end of 2026, covering data in flight
+      and at rest for federal, defence, healthcare and finance deployments.
+    source: https://hammerspace.com/hammerspace-announces-fips-140-3-validation-plans-to-integrate-certified-cryptography-into-data-platform/
+  - version: '5.2'
+    date: '2025-11-17'
+    breaking: false
+    highlights:
+    - Performance, security and ecosystem enhancements for AI and HPC workloads.
+    - 33.7% higher IO500 overall score than the prior release, roughly double total
+      bandwidth, and over 800% gain in IOR-Hard-Read.
+    source: https://hammerspace.com/hammerspace-announces-latest-version-of-its-data-platform/
+  - version: '5.1'
+    highlights:
+    - Introduced Tier 0, using unused local NVMe on GPU servers as part of the
+      global shared file system.
+    - Added client-side S3 protocol support.
+    - Added three-way high availability for metadata servers with automated
+      failover across clusters and sites.
+    - Added high availability in Google Cloud and a tile-based customisable GUI
+      dashboard.
+  - version: '5.0'
+    highlights:
+    - Release 5 performance work plus support for Backblaze, Zadara and Wasabi as
+      backing object storage.
+x-evidence:
+  fetched: '2026-08-04'
+  caveat: >-
+    The data-platform entries are reconstructed from Hammerspace's own press
+    releases; Hammerspace does not publish per-release notes at a public URL, so
+    dates are present only where the announcement carried one.

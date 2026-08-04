@@ -1,0 +1,79 @@
+generated: '2026-08-04'
+method: searched
+source: >-
+  Hammerspace's public GitHub organization plus the hammerspace.com news room and
+  support pages
+versioning:
+  scheme: uri-path
+  current: v1.2
+  base_path: /mgmt/v1.2/rest
+  stability: >-
+    The /mgmt/v1.2/rest base path has been stable across every public Hammerspace
+    client since the CSI driver was first published in 2019, spanning Data
+    Platform releases 4.x through 5.2.
+  docs: null
+  note: >-
+    Hammerspace publishes no API versioning policy on a public URL. The scheme is
+    read off the base path used by every Hammerspace-authored client.
+product_versioning:
+  scheme: major.minor
+  current: '5.2'
+  compatibility_published: true
+  examples:
+  - artifact: hstk
+    statement: >-
+      hstk 4.6.6.x no longer works with Hammerspace 4.6.4 and earlier; earlier
+      hstk supports Hammerspace 4.5.x and later.
+    source: https://github.com/hammer-space/hstk/blob/master/README.md
+  - artifact: csi-plugin
+    statement: >-
+      A published compatibility matrix maps CSI_MAJOR_VERSION 1 to CSI spec v1.9.0
+      and Kubernetes 1.29 and 1.34–1.36 (validated set), and CSI_MAJOR_VERSION 0
+      to the legacy CSI v0.3.0 path for Kubernetes 1.10–1.12.
+    source: https://github.com/hammer-space/csi-plugin/blob/main/README.md
+deprecation:
+  policy_url: null
+  sunset_header: false
+  practice_observed: true
+  description: >-
+    No RFC 8594 Sunset/Deprecation header support and no published deprecation
+    policy for the REST API. Deprecation is handled in product artifacts instead:
+    the CSI driver's changelog carries an explicit Removed section (ext3 dropped
+    as a file-backed filesystem in 1.3.0, the clientMountOptions StorageClass
+    parameter removed in 1.2.9, python2 support removed in hstk 4.6.6.0) and
+    superseded Kubernetes manifests are moved to deploy/kubernetes/archive/ and
+    marked unsupported rather than deleted.
+  evidence:
+  - https://github.com/hammer-space/csi-plugin/blob/main/CHANGELOG.md
+  - https://github.com/hammer-space/hstk/blob/master/README.md
+support:
+  channels:
+  - url: https://hammerspace.com/support/
+    kind: support page
+  - url: https://supportportal.hammerspace.com/
+    kind: customer support portal (HappyFox / Salesforce Experience Cloud, login required)
+  contact: info@hammerspace.com
+sla:
+  url: null
+  uptime_target: null
+  note: >-
+    Hammerspace software runs in the customer's own environment (on-premises, AWS,
+    Azure, Google Cloud), so there is no vendor-operated uptime SLA for the API.
+    Support SLAs are commercial terms, not published.
+status_page: null
+status_page_note: >-
+  No status page found. status.hammerspace.com does not resolve, and no status
+  link was discoverable. Deliberately NOT wired as a StatusPage pointer — there
+  is nothing to point at, and for a customer-deployed platform there is nothing
+  for a vendor status page to report.
+end_user_license: https://hammerspace.com/eula/
+deprecated_operations: []
+x-evidence:
+  fetched: '2026-08-04'
+  probes:
+  - host: status.hammerspace.com
+    result: NXDOMAIN
+  - host: trust.hammerspace.com
+    result: NXDOMAIN
+  - host: docs.hammerspace.com
+    result: NXDOMAIN

@@ -1,0 +1,82 @@
+generated: '2026-08-04'
+method: searched
+status: published-self-hosted
+source: https://hammerspace.com/hammerspace-launches-ai-data-platform-based-on-nvidia-reference-design/
+server:
+  name: hammerspace
+  vendor: Hammerspace Inc
+  transport: unknown
+  url: null
+  hosted_by: customer
+  description: >-
+    Hammerspace ships Model Context Protocol services as a component of the
+    Hammerspace AI Data Platform, announced at NVIDIA GTC in October 2025 and
+    made generally available on an NVIDIA AI Data Platform reference design in
+    March 2026. MCP sits alongside an integrated Milvus vector database: files
+    tagged for embedding are promoted to Tier 0 (local NVMe on GPU servers),
+    processed into vector embeddings, stored in Milvus for semantic search, and
+    returned to their default tier — with MCP giving AI agents and RAG pipelines
+    direct, policy-governed access to the resulting data estate.
+    The server runs inside the customer's own deployment of the platform, so
+    there is no Hammerspace-hosted public MCP endpoint to introspect.
+discovery:
+  public_endpoint: false
+  tools_list_probe: not-applicable
+  note: >-
+    tools/list could not be probed: no public MCP URL is published, and every
+    path on hammerspace.com is answered by a bot-protection challenge (HTTP 202).
+    The tool set below is therefore NOT the official server's manifest — it is
+    recorded from the one public reference implementation, clearly attributed.
+tools: []
+reference_implementation:
+  name: MCP 1.5 — Advanced Hammerspace Storage Management with AI
+  url: https://github.com/mbloomhammerspace/mcp-1.5-main
+  license: MIT
+  first_party: false
+  attribution: >-
+    Published on a personal GitHub account whose handle indicates Hammerspace
+    affiliation, but which declares no organization and is not part of the
+    github.com/hammer-space organization. Treated as a community/individual
+    reference implementation, not a Hammerspace-published artifact.
+  architecture: >-
+    Drives Hammerspace through the hstk CLI against a mounted global file system
+    and through the Anvil, with Kubernetes ingestion jobs and a Milvus vector
+    database behind it.
+  tools:
+  - {name: list_shares, category: shares}
+  - {name: list_files, category: files}
+  - {name: list_files_by_tag, category: files}
+  - {name: get_file_tags, category: metadata}
+  - {name: set_file_tag, category: metadata}
+  - {name: tag_directory_recursive, category: metadata}
+  - {name: create_objective, category: objectives}
+  - {name: apply_hs_objective, category: objectives}
+  - {name: remove_hs_objective, category: objectives}
+  - {name: apply_objective_to_path, category: objectives}
+  - {name: remove_objective_from_path, category: objectives}
+  - {name: list_objectives_for_path, category: objectives}
+  - {name: check_file_alignment, category: placement}
+  - {name: check_tagged_files_alignment, category: placement}
+  - {name: aiq_analyze_storage, category: analysis}
+  - {name: aiq_optimize_tiering, category: analysis}
+  - {name: list_jobs, category: jobs}
+  - {name: ingest_new_files, category: ingestion}
+  - {name: get_file_ingest_events, category: ingestion}
+  - {name: get_file_monitor_status, category: ingestion}
+  - {name: refresh_mounts, category: mounts}
+related:
+  vector_database: Milvus (integrated)
+  tier0: Local NVMe on GPU servers pooled into the global namespace
+  cli: cli/hammerspace-cli.yml
+  rest_api: apis.yml#hammerspace:anvil-management-api
+x-evidence:
+  fetched: '2026-08-04'
+  sources:
+  - https://hammerspace.com/hammerspace-launches-ai-data-platform-based-on-nvidia-reference-design/
+  - https://hammerspace.com/hammerspace-unveils-ai-data-platform-solution/
+  - https://github.com/mbloomhammerspace/mcp-1.5-main
+  caveat: >-
+    Hammerspace's MCP support is asserted by Hammerspace in its own product
+    announcements. Protocol version, transport, tool names and input schemas of
+    the official server could not be verified because the server is deployed by
+    the customer and no public endpoint or manifest is published.

@@ -42,5 +42,31 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Hammerspace is a company surfaced via the API Evangelist harvest backlog (source: secondary-market) and added to the network as a stub for full-pipeline profiling.
-- https://forgeglobal.com/hammerspace_stock/
+Hammerspace, Inc. builds the Hammerspace Global Data Platform — a parallel file system and
+software-defined data platform that unifies unstructured data across on-premises storage, edge
+sites, AWS, Azure and Google Cloud into a single global namespace. Data is reached over NFS,
+pNFS v4.2 with Flex Files, SMB, S3 and CSI, while placement, tiering, replication, snapshots and
+retention are driven by declarative objectives. The 2026 AI Data Platform adds Tier-0 NVMe pooling
+on GPU servers, an integrated Milvus vector database, and Model Context Protocol services for AI
+agents and RAG pipelines.
+
+## API surface
+
+Hammerspace's programmatic control plane is the **Anvil management REST API** at the base path
+`/mgmt/v1.2/rest`, served by each customer's own Anvil metadata server rather than from a
+Hammerspace-hosted endpoint.
+
+**Hammerspace publishes no OpenAPI, Swagger, or public API reference.** `/openapi.json`,
+`/swagger.json` and `/api-docs` were probed on every Hammerspace host and the whole
+`github.com/hammer-space` organization was searched; nothing exists publicly. Product documentation
+ships with the software and through the gated customer support portal. Every convention recorded in
+this repo is evidenced instead in Hammerspace's own Apache-2.0 open source clients — the Kubernetes
+CSI driver's Go client and the Ansible operations playbooks.
+
+- Website — https://hammerspace.com/
+- GitHub organization — https://github.com/hammer-space
+- Resources (incl. the AWS Marketplace Deployment Guide) — https://hammerspace.com/resources/
+- Support portal (login required) — https://supportportal.hammerspace.com/
+
+Surfaced via the API Evangelist harvest backlog (source: secondary-market —
+https://forgeglobal.com/hammerspace_stock/).

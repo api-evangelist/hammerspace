@@ -1,0 +1,106 @@
+generated: '2026-08-04'
+method: searched
+source: https://github.com/hammer-space/hstk
+name: hs
+title: Hammerspace CLI and Python toolkit (hstk)
+description: >-
+  `hs` is Hammerspace's first-party command line tool, distributed with the open
+  source hstk Python toolkit (Apache-2.0). It runs against a mounted Hammerspace
+  global file system rather than over the network — since hstk 4.6.6.0 commands
+  are issued through a shadow gateway file, which removes the Hammerscript
+  command-length limit, avoids locking the directory the command was run from,
+  and adds Windows client support. It is the metadata/objective-facing CLI; the
+  Anvil cluster itself is administered through the separate on-appliance admin
+  CLI, the GUI, and the /mgmt/v1.2/rest management API.
+package: packages/hammerspace-packages.yml#hstk
+version: 4.6.6.1
+license: Apache-2.0
+compatibility:
+  hammerspace: '>=4.6.5 for hstk 4.6.6.x; 4.5.x and later for earlier hstk'
+  python: python3 only (python2 support removed in 4.6.6.0)
+install:
+- method: pip
+  command: pip3 install hstk
+- method: rpm
+  command: python3 setup.py bdist_rpm
+  note: Build an RPM from a clone of github.com/hammer-space/hstk.
+- method: offline
+  command: pip3 download -r requirements.txt && pip3 install *.whl
+  note: Documented wheel-collection path for air-gapped systems (INSTALL.Linux.md).
+shell_completion:
+  supported: true
+  note: >-
+    Click-based completion; not configured by pip or rpm install. For bash, add
+    /etc/bash_completion.d/hs_bash_completion with
+    eval "$(LANG=en_US.utf8 _HS_COMPLETE=source hs)".
+commands:
+- group: null
+  name: eval
+  description: Evaluate hsscript expressions on a file.
+- group: null
+  name: sum
+  description: Perform fast calculations on a set of files.
+- group: null
+  name: rm
+  description: Fast offloaded rm -rf.
+- group: null
+  name: cp
+  description: Fast offloaded recursive copy via clone.
+- group: null
+  name: rsync
+  description: Fast offloaded recursive directory equalizer (add and delete).
+- group: null
+  name: collsum
+  description: Usage details about one or all collections in a whole share (fast).
+- group: attribute
+  subcommands: [list, get, has, set, add, delete]
+  description: Manage arbitrary named attributes on inodes.
+- group: keyword
+  subcommands: [list, has, add, delete]
+  description: Manage keywords assigned to files.
+- group: label
+  subcommands: [list, has, add, delete]
+  description: Manage labels assigned to files.
+- group: tag
+  subcommands: [list, get, has, set, add, delete]
+  description: Manage tags and tag values on inodes.
+- group: rekognition-tag
+  subcommands: [list, get, has, set, add, delete]
+  description: Manage tags added by Amazon Rekognition image/video analysis.
+- group: objective
+  subcommands: [list, has, add, delete]
+  description: >-
+    Manage (objective, expression) pairs on inodes — the declarative placement,
+    tiering and protection rules that drive the Hammerspace data platform.
+- group: status
+  subcommands: [assimilation, csi, collections, errors, open, replication, sweeper, volume]
+  description: System, component and task status for shares.
+- group: usage
+  subcommands: [alignment, virus-scan, owner, online, volume, user, objectives, mime_tags,
+    rekognition_tags, dirs]
+  description: Resource utilization — capacity, inodes, objectives, discovery tags.
+- group: perf
+  subcommands: [clear, top_calls, top_funcs, top_ops, flushes]
+  description: Performance and filesystem-operation statistics per share.
+- group: dump
+  subcommands: [inode, iinfo, share, misaligned, threat, map_file_to_obj, files_on_volume,
+    volumes, volume_groups, objectives]
+  description: >-
+    Dump metadata about inodes, shares, volumes, volume groups and objectives;
+    iinfo always emits JSON.
+- group: keep-on-site
+  subcommands: [available, list, has, add, delete]
+  description: >-
+    Manage which sites in the global namespace keep copies of the data.
+related:
+  admin_cli: >-
+    Hammerspace also ships an on-appliance admin CLI for cluster administration;
+    it is documented in the customer-facing guides on hammerspace.com/resources/
+    and the AWS Marketplace Deployment Guide, not in a public repository.
+  rest_api: apis.yml#hammerspace:anvil-management-api
+x-evidence:
+  fetched: '2026-08-04'
+  sources:
+  - https://github.com/hammer-space/hstk/blob/master/hstk/hscli.py
+  - https://github.com/hammer-space/hstk/blob/master/README.md
+  - https://pypi.org/project/hstk/
