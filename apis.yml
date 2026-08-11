@@ -66,6 +66,13 @@ maintainers:
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: IssueTracker
+  url: https://github.com/hammer-space/csi-plugin/issues
+- type: Releases
+  url: https://github.com/hammer-space/csi-plugin/releases
+- type: License
+  name: Apache-2.0
+  url: https://github.com/hammer-space/csi-plugin/blob/master/LICENSE
 - type: DomainSecurity
   url: security/hammerspace-domain-security.yml
 - type: Website
