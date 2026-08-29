@@ -12,6 +12,19 @@ description: 'Hammerspace, Inc. is a Redwood City, California software company b
   at /mgmt/v1.2/rest. The 2026 AI Data Platform release adds Tier-0 NVMe pooling on
   GPU servers, Milvus vector search, and a Model Context Protocol (MCP) server that
   exposes enterprise data to AI agents and RAG pipelines.'
+deliveryModel:
+  model: open-core
+  license: Apache-2.0
+  open_source: true
+  commercial: true
+  callable_host: false
+  label: Open core · an OSS project plus a commercial hosted product
+  confidence: high
+  source:
+  - license
+  - pricing
+  generated: '2026-08-28'
+  method: derived
 image: https://avatars.githubusercontent.com/u/47825731?v=4
 url: https://raw.githubusercontent.com/api-evangelist/hammerspace/refs/heads/main/apis.yml
 x-type: company
