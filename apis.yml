@@ -25,6 +25,20 @@ deliveryModel:
   - pricing
   generated: '2026-08-28'
   method: derived
+accessModel:
+  pricing: unknown
+  onboarding: unknown
+  trial: false
+  try_now: false
+  public: false
+  label: Unknown
+  confidence: low
+  source:
+  - authentication
+  - scopes
+  - security
+  generated: '2026-09-03'
+  method: derived
 image: https://avatars.githubusercontent.com/u/47825731?v=4
 url: https://raw.githubusercontent.com/api-evangelist/hammerspace/refs/heads/main/apis.yml
 x-type: company
