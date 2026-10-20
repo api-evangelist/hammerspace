@@ -3,8 +3,13 @@ method: searched
 checked:
 - https://api.nuget.org/v3
 - https://azuremarketplace.microsoft.com/
+- https://cdn.winget.microsoft.com/cache
 - https://crates.io/api/v1
 - https://focus.finops.org/data-generators/
+- https://formulae.brew.sh/api/cask.json
+- https://formulae.brew.sh/api/formula.json
+- https://github.com/ScoopInstaller/Extras
+- https://github.com/ScoopInstaller/Main
 - https://github.com/cncf/k8s-conformance
 - https://github.com/cncf/landscape
 - https://proxy.golang.org
@@ -122,6 +127,36 @@ edges:
     detected: '2026-10-19'
   detected_by: sweep-cloud-native.py
   first_seen: '2026-10-15'
+- partner_name: PyPI
+  partner: pypi
+  partner_match: register
+  type: register
+  direction: provider-built
+  category: official CLI (PyPI)
+  evidence: https://pypi.org/project/hstk/
+  channel: package-registry
+  relationship: distribution-channel
+  contract_reference:
+    register: PyPI (public package index)
+    spec_file: null
+    packages:
+    - name: hstk
+      version: 4.6.6.1
+      released: '2024-07-26'
+      released_field: upload_time
+      lapsed: true
+      page: https://pypi.org/project/hstk/
+      cli: 'PyPI name/summary: Hammerspace CLI tool and python toolkit (hstk)'
+      repo_leg: github-org:hammer-space
+      publisher_leg: email:hammerspace.com
+      matched_by: domain
+    current: false
+    signal_note: 'the provider''s own command-line tool on a package manager: distribution, not an integration;
+      lapsed = no release in 24 months or deprecated / disabled by the manager'
+    detected_by: sweep-official-clis.py
+    detected: '2026-10-20'
+  detected_by: sweep-official-clis.py
+  first_seen: '2026-10-20'
 source:
 - https://github.com/cncf/landscape
 - https://github.com/cncf/k8s-conformance
